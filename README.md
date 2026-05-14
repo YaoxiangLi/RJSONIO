@@ -61,7 +61,7 @@ simplification modes, encodings, connections, edge cases, and string callbacks.
 
 ## Documentation
 
-- Package website: <https://yaoxiangli.github.io/RJSONIO/>
+- Package website and articles: <https://yaoxiangli.github.io/RJSONIO/>
 - CRAN page: <https://CRAN.R-project.org/package=RJSONIO>
 - Issues: <https://github.com/YaoxiangLi/RJSONIO/issues>
 
@@ -77,5 +77,5 @@ Run a package check:
 
 ```sh
 R CMD build RJSONIO
-R CMD check --no-manual RJSONIO_2.0.2.tar.gz
+R CMD check --no-manual RJSONIO_2.0.3.tar.gz
 ```

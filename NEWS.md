@@ -1,3 +1,11 @@
+# RJSONIO 2.0.3
+
+## Documentation
+
+- Added package vignettes covering package overview, parsing, serialization,
+  type mapping, customization, and connection/streaming workflows.
+- Added pkgdown Articles navigation for the vignette suite.
+
 # RJSONIO 2.0.2
 
 ## Documentation

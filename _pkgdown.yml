@@ -6,13 +6,25 @@ template:
 
 navbar:
   structure:
-    left: [reference, news]
+    left: [reference, articles, news]
     right: [github]
   components:
     github:
       icon: fab fa-github
       href: https://github.com/YaoxiangLi/RJSONIO
       aria-label: GitHub repository
+
+articles:
+  - title: Getting started
+    contents:
+      - rjsonio
+      - parsing-json
+      - writing-json
+  - title: Reference workflows
+    contents:
+      - type-mapping
+      - advanced-customization
+      - connections-and-streaming
 
 reference:
   - title: Read JSON

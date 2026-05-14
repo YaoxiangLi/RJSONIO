@@ -1,0 +1,95 @@
+---
+title: "Writing JSON"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Writing JSON}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(RJSONIO)
+```
+
+`toJSON()` serializes R objects to JSON text. It has methods for common base R
+types and can be extended with S4 methods.
+
+## Atomic vectors
+
+```{r atomic-vectors}
+toJSON(c(1, 2, 3))
+toJSON(c(TRUE, FALSE))
+toJSON(c("abc", "xyz"))
+```
+
+Named atomic vectors are written as JSON objects.
+
+```{r named-vectors}
+toJSON(c(a = 1, b = 2))
+fromJSON(toJSON(c(a = 1, b = 2)))
+```
+
+## Lists and nested values
+
+Lists can represent nested JSON objects and arrays.
+
+```{r lists}
+value <- list(
+  name = "example",
+  flags = c(TRUE, FALSE),
+  nested = list(x = 1, y = "two")
+)
+
+cat(toJSON(value, pretty = TRUE))
+```
+
+## Data frames
+
+By default, data frames are serialized by column. Use `byrow = TRUE` to write a
+row-oriented array.
+
+```{r data-frames}
+data <- data.frame(id = 1:2, label = c("a", "b"))
+
+cat(toJSON(data, pretty = TRUE))
+cat(toJSON(data, byrow = TRUE, colNames = TRUE, pretty = TRUE))
+```
+
+## Matrices and arrays
+
+```{r matrices-arrays}
+mat <- matrix(1:4, nrow = 2)
+cat(toJSON(mat))
+
+arr <- array(1:8, dim = c(2, 2, 2))
+isValidJSON(I(toJSON(arr)))
+```
+
+## Missing and empty values
+
+Missing values are written as JSON `null` by default. Empty unnamed lists are
+written as arrays, while `emptyNamedList` is written as an object.
+
+```{r missing-empty}
+toJSON(c("a", NA, "b"))
+fromJSON(toJSON(c("a", NA, "b")), nullValue = NA, simplify = TRUE)
+
+toJSON(list())
+toJSON(emptyNamedList)
+```
+
+## Numeric formatting
+
+The `digits` argument controls numeric formatting.
+
+```{r digits}
+toJSON(c(pi, exp(1)), digits = 4)
+toJSON(c(pi, exp(1)), digits = 8)
+```

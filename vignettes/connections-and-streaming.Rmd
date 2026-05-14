@@ -1,0 +1,91 @@
+---
+title: "Connections and Streaming"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Connections and Streaming}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(RJSONIO)
+```
+
+`fromJSON()` can read from files and R connections. `readJSONStream()` provides
+a lower-level connection-oriented parser interface.
+
+## File paths
+
+```{r file-path}
+path <- system.file("sampleData", "keys.json", package = "RJSONIO")
+parsed <- fromJSON(path)
+
+names(parsed)
+```
+
+## Text connections
+
+```{r text-connection}
+con <- textConnection("[1, 2, 3,\n4]")
+parsed <- fromJSON(con)
+close(con)
+
+parsed
+```
+
+## File connections
+
+```{r file-connection}
+path <- system.file("sampleData", "usaPolygons.as", package = "RJSONIO")
+con <- file(path)
+parsed <- fromJSON(con)
+close(con)
+
+length(parsed)
+```
+
+## Parser callbacks
+
+Callbacks can be used to observe parser events without building the default R
+object.
+
+```{r parser-callback}
+events <- character()
+
+result <- fromJSON(path, function(type, value) {
+  events <<- c(events, names(type))
+  TRUE
+})
+
+result
+head(events)
+```
+
+## Streaming parser
+
+`readJSONStream()` accepts a connection and reads JSON content from it.
+
+```{r read-json-stream}
+tmp <- tempfile(fileext = ".json")
+writeLines("[1, 2, 3]", tmp, useBytes = TRUE)
+
+con <- file(tmp, open = "rb")
+streamed <- readJSONStream(con)
+close(con)
+unlink(tmp)
+
+streamed
+```
+
+## Practical notes
+
+For ordinary package code, start with `fromJSON()` on a string, file path, or
+connection. Use parser callbacks or `readJSONStream()` when the application
+needs lower-level control over parsing.

@@ -1,0 +1,83 @@
+---
+title: "RJSONIO"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RJSONIO}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(RJSONIO)
+```
+
+`RJSONIO` converts data between R objects and JSON text. The main entry points
+are `fromJSON()` for parsing JSON and `toJSON()` for serializing R objects.
+
+## Basic parsing
+
+Use `fromJSON()` with JSON text, a file path, or a connection.
+
+```{r parse-basic}
+fromJSON('{"name": "RJSONIO", "active": true, "values": [1, 2, 3]}')
+```
+
+Character input that starts with `{` or `[` is treated as JSON content. A plain
+file path is read from disk.
+
+```{r parse-file}
+path <- system.file("sampleData", "keys.json", package = "RJSONIO")
+names(fromJSON(path))
+```
+
+## Basic serialization
+
+Use `toJSON()` to serialize common R objects.
+
+```{r write-basic}
+value <- list(
+  id = 1,
+  name = "RJSONIO",
+  values = c(1, 2, 3),
+  active = TRUE
+)
+
+json <- toJSON(value, pretty = TRUE)
+cat(json)
+```
+
+The result can be parsed back into R.
+
+```{r roundtrip-basic}
+fromJSON(json)
+```
+
+## Validation
+
+`isValidJSON()` checks whether JSON text can be parsed.
+
+```{r validate-basic}
+candidate <- toJSON(list(name = "RJSONIO", version = "2.0.3"))
+isValidJSON(I(candidate))
+isValidJSON(I("{not valid json}"))
+```
+
+## Round trips
+
+Round trips are most direct for simple vectors and lists whose JSON
+representation maps cleanly back to base R types.
+
+```{r roundtrip}
+value <- list(a = 1, b = c(TRUE, FALSE), c = c("x", "y"))
+parsed <- fromJSON(toJSON(value))
+
+identical(parsed, value)
+parsed
+```
