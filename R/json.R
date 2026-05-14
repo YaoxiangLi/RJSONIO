@@ -18,6 +18,14 @@ function(x, asIs, .level)
   (is.na(asIs) && .level == 1) || (!is.na(asIs) && asIs) ||
        .level == 1L || length(x) > 1  || length(names(x)) > 0 || is.list(x)
 
+toJSONAtomicFast =
+function(x, container, .withNames, collapse, .na, .escapeEscapes)
+{
+  .Call("R_toJSONAtomicFast", x, as.logical(container), as.logical(.withNames),
+        as.character(collapse), as.character(.na), as.logical(.escapeEscapes),
+        PACKAGE = "RJSONIO")
+}
+
 setGeneric("toJSON",
   function(x, container = isContainer(x, asIs, .level),
            collapse = "\n", ...,
@@ -98,6 +106,10 @@ setMethod("toJSON", "integer",
                       .withNames = length(x) > 0 && length(names(x)) > 0, .na = "null",
                        .escapeEscapes = TRUE, pretty = FALSE, asIs = NA, .inf = " Infinity")
           {
+            ans = toJSONAtomicFast(x, container, .withNames, collapse, .na, .escapeEscapes)
+            if(!is.null(ans))
+              return(ans)
+
             if(any(is.infinite(x)))
               warning("non-fininte values in integer vector may not be approriately represented in JSON")
             
@@ -147,6 +159,10 @@ setMethod("toJSON", "logical",
            function(x, container =  isContainer(x, asIs, .level),
                      collapse = "\n", ..., .level = 1L,
                      .withNames = length(x) > 0 && length(names(x)) > 0, .na = "null", pretty = FALSE, asIs = NA, .inf = " Infinity") {
+             ans = toJSONAtomicFast(x, container, .withNames, collapse, .na, TRUE)
+             if(!is.null(ans))
+               return(ans)
+
              tmp = ifelse(x, "true", "false")
              if(any(nas <- is.na(tmp)))
                  tmp[nas] = .na             
@@ -191,6 +207,10 @@ setMethod("toJSON", "numeric",
 setMethod("toJSON", "character",
            function(x, container =  isContainer(x, asIs, .level), collapse = "\n", digits =  getOption("digits", 5), ...,
                     .level = 1L, .withNames = length(x) > 0 && length(names(x)) > 0, .na = "null", .escapeEscapes = TRUE, pretty = FALSE, asIs = NA, .inf = " Infinity") {
+             ans = toJSONAtomicFast(x, container, .withNames, collapse, .na, .escapeEscapes)
+             if(!is.null(ans))
+               return(ans)
+
 # Don't do this: !             tmp = gsub("\\\n", "\\\\n", x)
 
 #             if(length(x) == 0)    return("[ ]")

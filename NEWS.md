@@ -1,3 +1,10 @@
+# RJSONIO development version
+
+## Performance
+
+- Added a native `toJSON()` fast path for integer, logical, and character
+  vectors while preserving existing JSON output for supported cases.
+
 # RJSONIO 2.0.3
 
 ## Documentation
