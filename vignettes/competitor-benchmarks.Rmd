@@ -20,6 +20,7 @@ under `benchmarks/` and are excluded from CRAN package builds.
 
 The numbers are machine-specific. They are useful for checking relative behavior
 on one system, but should be rerun locally before making performance claims.
+Smaller elapsed-time and memory values are better.
 
 ```{r package-versions, echo = FALSE}
 version_file <- "figures/benchmarks/package-versions.csv"
@@ -51,7 +52,24 @@ set:
 The payloads include a numeric vector, a data frame, and a nested list. Packages
 that do not support a given operation are skipped for that operation.
 
+## Summary
+
+The summary heatmap is the main comparison. Each cell reports median elapsed
+time as a ratio to `RJSONIO`, followed by the absolute median elapsed time. Blue
+cells are faster than `RJSONIO` for the same task and payload; orange cells are
+slower. A value of `1.00x` is the `RJSONIO` baseline.
+
+```{r benchmark-summary, echo = FALSE, out.width = "100%"}
+summary_plot <- "figures/benchmarks/benchmark-summary.png"
+if (file.exists(summary_plot)) {
+  knitr::include_graphics(summary_plot)
+}
+```
+
 ## Elapsed Time
+
+These bars show the same median timings in milliseconds. `RJSONIO` bars are
+shown in the darker color.
 
 ```{r elapsed-time, echo = FALSE, out.width = "100%"}
 elapsed_plot <- "figures/benchmarks/elapsed-time.png"
@@ -62,6 +80,9 @@ if (file.exists(elapsed_plot)) {
 
 ## Memory Allocation
 
+These bars show memory allocated by the measured expression. `RJSONIO` bars are
+shown in the darker color.
+
 ```{r memory-allocation, echo = FALSE, out.width = "100%"}
 memory_plot <- "figures/benchmarks/memory-allocation.png"
 if (file.exists(memory_plot)) {
@@ -70,6 +91,9 @@ if (file.exists(memory_plot)) {
 ```
 
 ## Relative Elapsed Time
+
+This chart uses `RJSONIO = 1.00x` for each task and payload. Values below
+`1.00x` are faster than `RJSONIO`; values above `1.00x` are slower.
 
 ```{r relative-time, echo = FALSE, out.width = "100%"}
 relative_plot <- "figures/benchmarks/relative-time.png"

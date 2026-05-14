@@ -19,6 +19,8 @@ Outputs are written to:
 - `benchmarks/results/benchmark-results.csv`
 - `benchmarks/results/benchmark-skips.csv`
 - `benchmarks/results/package-versions.csv`
+- `benchmarks/results/environment.csv`
+- `benchmarks/figures/benchmark-summary.png`
 - `benchmarks/figures/elapsed-time.png`
 - `benchmarks/figures/memory-allocation.png`
 - `benchmarks/figures/relative-time.png`

@@ -265,7 +265,7 @@ utils::write.csv(environment_info, file.path(result_dir, "environment.csv"), row
 
 plot_data <- result_data[result_data$median_sec > 0, , drop = FALSE]
 
-save_plot <- function(plot, filename, width = 9, height = 6) {
+save_plot <- function(plot, filename, width = 11, height = 7) {
   path <- file.path(figure_dir, filename)
   ggplot2::ggsave(path, plot, width = width, height = height, dpi = 160)
   invisible(file.copy(path, file.path(article_figure_dir, filename), overwrite = TRUE))
@@ -284,75 +284,156 @@ if (nrow(plot_data)) {
     data_frame = "Data frame",
     nested_list = "Nested list"
   )
-  plot_data$job_label <- factor(job_labels[plot_data$job], levels = rev(job_labels))
+  package_levels <- names(adapters)
+  plot_data$package <- factor(plot_data$package, levels = rev(package_levels))
+  plot_data$job_label <- factor(job_labels[plot_data$job], levels = job_labels)
   plot_data$payload_label <- factor(payload_labels[plot_data$payload], levels = payload_labels)
   plot_data$mem_alloc_mb <- plot_data$mem_alloc_bytes / (1024^2)
-  dodge <- ggplot2::position_dodge(width = 0.65)
+  plot_data$median_ms <- plot_data$median_sec * 1000
+  plot_data$mem_label <- ifelse(plot_data$mem_alloc_mb >= 1,
+    sprintf("%.1f MB", plot_data$mem_alloc_mb),
+    sprintf("%.0f KB", plot_data$mem_alloc_mb * 1024)
+  )
 
-  elapsed_plot <- ggplot2::ggplot(
-    plot_data,
-    ggplot2::aes(x = median_sec, y = job_label, color = package)
-  ) +
-    ggplot2::geom_point(position = dodge, size = 2.4) +
-    ggplot2::scale_x_log10() +
-    ggplot2::facet_wrap(~ payload_label, ncol = 1) +
-    ggplot2::labs(
-      title = "Elapsed time by package and JSON task",
-      x = "Median elapsed time, seconds (log scale)",
-      y = NULL,
-      color = "Package"
-    ) +
-    ggplot2::theme_minimal(base_size = 12) +
-    ggplot2::theme(legend.position = "bottom")
+  format_ms <- function(x) {
+    ifelse(x < 0.1, sprintf("%.2f ms", x),
+      ifelse(x < 10, sprintf("%.1f ms", x), sprintf("%.0f ms", x))
+    )
+  }
 
   memory_plot_data <- plot_data[plot_data$mem_alloc_mb > 0, , drop = FALSE]
-  memory_plot <- ggplot2::ggplot(
-    memory_plot_data,
-    ggplot2::aes(x = mem_alloc_mb, y = job_label, color = package)
-  ) +
-    ggplot2::geom_point(position = dodge, size = 2.4) +
-    ggplot2::scale_x_log10() +
-    ggplot2::facet_wrap(~ payload_label, ncol = 1) +
-    ggplot2::labs(
-      title = "Memory allocation by package and JSON task",
-      x = "Memory allocated, MB (log scale)",
-      y = NULL,
-      color = "Package"
-    ) +
-    ggplot2::theme_minimal(base_size = 12) +
-    ggplot2::theme(legend.position = "bottom")
 
   baseline <- plot_data[plot_data$package == "RJSONIO", c("payload", "job", "median_sec")]
   names(baseline)[3] <- "rjsonio_median_sec"
   relative_data <- merge(plot_data, baseline, by = c("payload", "job"))
   relative_data$relative_to_rjsonio <- relative_data$median_sec / relative_data$rjsonio_median_sec
-  relative_data$job_label <- factor(job_labels[relative_data$job], levels = rev(job_labels))
+  relative_data$log2_relative <- log2(relative_data$relative_to_rjsonio)
+  relative_data$ratio_label <- ifelse(
+    relative_data$relative_to_rjsonio < 0.01,
+    "<0.01x",
+    sprintf("%.2fx", relative_data$relative_to_rjsonio)
+  )
+  relative_data$label <- paste0(
+    relative_data$ratio_label,
+    "\n",
+    format_ms(relative_data$median_sec * 1000)
+  )
+  relative_data$package <- factor(relative_data$package, levels = rev(package_levels))
+  relative_data$job_label <- factor(job_labels[relative_data$job], levels = job_labels)
   relative_data$payload_label <- factor(payload_labels[relative_data$payload], levels = payload_labels)
+
+  summary_plot <- ggplot2::ggplot(
+    relative_data,
+    ggplot2::aes(x = job_label, y = package, fill = log2_relative)
+  ) +
+    ggplot2::geom_tile(color = "white", linewidth = 0.7) +
+    ggplot2::geom_text(ggplot2::aes(label = label), size = 3.1, lineheight = 0.9) +
+    ggplot2::scale_fill_gradient2(
+      low = "#2c7fb8",
+      mid = "white",
+      high = "#d95f0e",
+      midpoint = 0,
+      breaks = log2(c(0.25, 0.5, 1, 2, 4)),
+      labels = c("0.25x", "0.5x", "1x", "2x", "4x"),
+      name = "Time vs\nRJSONIO"
+    ) +
+    ggplot2::facet_wrap(~ payload_label, ncol = 1) +
+    ggplot2::labs(
+      title = "Relative elapsed time by package and JSON task",
+      subtitle = "Each cell shows median time relative to RJSONIO, then absolute median time. Lower ratios are faster.",
+      x = NULL,
+      y = NULL
+    ) +
+    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      legend.position = "right",
+      panel.grid = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(angle = 25, hjust = 1)
+    )
+
+  elapsed_plot <- ggplot2::ggplot(
+    plot_data,
+    ggplot2::aes(x = job_label, y = package, fill = log10(median_ms))
+  ) +
+    ggplot2::geom_tile(color = "white", linewidth = 0.7) +
+    ggplot2::geom_text(ggplot2::aes(label = format_ms(median_ms)), size = 3.1) +
+    ggplot2::scale_fill_gradient(
+      low = "#eef5fb",
+      high = "#1f5a8a",
+      name = "Median\nms, log10"
+    ) +
+    ggplot2::facet_wrap(~ payload_label, ncol = 1) +
+    ggplot2::labs(
+      title = "Median elapsed time for each benchmark task",
+      subtitle = "Each cell shows the median time in milliseconds. Darker cells took longer.",
+      x = NULL,
+      y = NULL
+    ) +
+    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      panel.grid = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(angle = 25, hjust = 1),
+      legend.position = "right"
+    )
+
+  memory_plot <- ggplot2::ggplot(
+    memory_plot_data,
+    ggplot2::aes(x = job_label, y = package, fill = log10(mem_alloc_mb))
+  ) +
+    ggplot2::geom_tile(color = "white", linewidth = 0.7) +
+    ggplot2::geom_text(ggplot2::aes(label = mem_label), size = 3.1) +
+    ggplot2::scale_fill_gradient(
+      low = "#eef7ee",
+      high = "#2f6b3f",
+      name = "Memory\nMB, log10"
+    ) +
+    ggplot2::facet_wrap(~ payload_label, ncol = 1) +
+    ggplot2::labs(
+      title = "Memory allocated for each benchmark task",
+      subtitle = "Each cell shows memory allocated by the measured expression. Darker cells allocated more memory.",
+      x = NULL,
+      y = NULL
+    ) +
+    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      panel.grid = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(angle = 25, hjust = 1),
+      legend.position = "right"
+    )
 
   relative_plot <- ggplot2::ggplot(
     relative_data,
-    ggplot2::aes(
-      x = relative_to_rjsonio,
-      y = job_label,
-      color = package
-    )
+    ggplot2::aes(x = job_label, y = package, fill = log2_relative)
   ) +
-    ggplot2::geom_vline(xintercept = 1, linewidth = 0.3, linetype = "dashed", color = "grey40") +
-    ggplot2::geom_point(position = dodge, size = 2.4) +
-    ggplot2::scale_x_log10() +
+    ggplot2::geom_tile(color = "white", linewidth = 0.7) +
+    ggplot2::geom_text(ggplot2::aes(label = ratio_label), size = 3.1) +
+    ggplot2::scale_fill_gradient2(
+      low = "#2c7fb8",
+      mid = "white",
+      high = "#d95f0e",
+      midpoint = 0,
+      breaks = log2(c(0.25, 0.5, 1, 2, 4)),
+      labels = c("0.25x", "0.5x", "1x", "2x", "4x"),
+      name = "Time vs\nRJSONIO"
+    ) +
     ggplot2::facet_wrap(~ payload_label, ncol = 1) +
     ggplot2::labs(
-      title = "Relative elapsed time compared with RJSONIO",
-      x = "Median elapsed time ratio, RJSONIO = 1 (log scale)",
-      y = NULL,
-      color = "Package"
+      title = "Elapsed time ratio compared with RJSONIO",
+      subtitle = "RJSONIO is 1.00x for each task and payload. Blue is faster; orange is slower.",
+      x = NULL,
+      y = NULL
     ) +
     ggplot2::theme_minimal(base_size = 12) +
-    ggplot2::theme(legend.position = "bottom")
+    ggplot2::theme(
+      panel.grid = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(angle = 25, hjust = 1),
+      legend.position = "right"
+    )
 
-  save_plot(elapsed_plot, "elapsed-time.png")
-  save_plot(memory_plot, "memory-allocation.png")
-  save_plot(relative_plot, "relative-time.png")
+  save_plot(summary_plot, "benchmark-summary.png", width = 10, height = 8.5)
+  save_plot(elapsed_plot, "elapsed-time.png", width = 15, height = 9)
+  save_plot(memory_plot, "memory-allocation.png", width = 15, height = 9)
+  save_plot(relative_plot, "relative-time.png", width = 15, height = 9)
 }
 
 invisible(file.copy(
