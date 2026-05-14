@@ -1,7 +1,5 @@
 # RJSONIO
 
-<img src="man/figures/logo.svg" align="right" height="140" alt="RJSONIO hex logo" />
-
 [![CRAN status](https://www.r-pkg.org/badges/version/RJSONIO)](https://CRAN.R-project.org/package=RJSONIO)
 [![pkgdown](https://github.com/YaoxiangLi/RJSONIO/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/YaoxiangLi/RJSONIO/actions/workflows/pkgdown.yaml)
 

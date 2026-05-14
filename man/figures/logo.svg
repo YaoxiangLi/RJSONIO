@@ -1,25 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 278" role="img" aria-labelledby="title desc">
-  <title id="title">RJSONIO hex logo</title>
-  <desc id="desc">A flat hex sticker for the RJSONIO package with an R mark and JSON braces.</desc>
-
-  <path fill="#FFFFFF" stroke="#2A6F97" stroke-width="9" stroke-linejoin="round"
-        d="M120 8 226 69v140l-106 61L14 209V69L120 8z"/>
-  <path fill="#EAF6FB" d="M120 27 209 78v122l-89 51-89-51V78l89-51z"/>
-
-  <circle cx="120" cy="103" r="48" fill="#2A6F97"/>
-  <text x="120" y="121" text-anchor="middle"
-        font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700"
-        fill="#FFFFFF">R</text>
-
-  <g fill="none" stroke="#0B3954" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M74 84c-13 0-19 8-19 21v8c0 10-4 15-13 15 9 0 13 5 13 15v8c0 13 6 21 19 21"/>
-    <path d="M166 84c13 0 19 8 19 21v8c0 10 4 15 13 15-9 0-13 5-13 15v8c0 13-6 21-19 21"/>
-  </g>
-
-  <text x="120" y="202" text-anchor="middle"
+  <title id="title">RJSONIO logo</title>
+  <desc id="desc">A minimal hex logo for the RJSONIO package.</desc>
+  <path fill="#FFFFFF" stroke="#2C7FB8" stroke-width="10" stroke-linejoin="round"
+        d="M120 10 224 70v138l-104 60-104-60V70L120 10z"/>
+  <text x="120" y="118" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700"
+        fill="#2C7FB8">{ }</text>
+  <text x="120" y="184" text-anchor="middle"
         font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700"
-        fill="#0B3954">RJSONIO</text>
-  <text x="120" y="227" text-anchor="middle"
-        font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700"
-        letter-spacing="2.5" fill="#2A6F97">JSON IO</text>
+        fill="#123B5D">RJSONIO</text>
 </svg>
