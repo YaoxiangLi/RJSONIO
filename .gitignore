@@ -4,6 +4,7 @@
 .Ruserdata
 *.Rcheck/
 *.tar.gz
+docs/
 src/*.o
 src/*.so
 src/*.dll

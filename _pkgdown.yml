@@ -1,0 +1,44 @@
+url: https://yaoxiangli.github.io/RJSONIO/
+
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+
+navbar:
+  structure:
+    left: [reference, news]
+    right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/YaoxiangLi/RJSONIO
+      aria-label: GitHub repository
+
+reference:
+  - title: Read JSON
+    desc: Parse JSON text, files, and connections into R objects.
+    contents:
+      - fromJSON
+      - readJSONStream
+      - basicJSONHandler
+  - title: Write JSON
+    desc: Serialize R objects to JSON.
+    contents:
+      - toJSON
+      - emptyNamedList
+  - title: Validate and simplify
+    desc: Validate JSON and control simplification behavior.
+    contents:
+      - isValidJSON
+      - Strict
+      - StrictNumeric
+      - StrictCharacter
+      - StrictLogical
+  - title: JavaScript helpers
+    desc: Helpers for writing JSON values as JavaScript variables.
+    contents:
+      - asJSVars
+  - title: Parser constants
+    desc: Constants exposed by the JSON parser callback interface.
+    contents:
+      - starts_with("JSON_T_")

@@ -16,8 +16,9 @@ test_that("toJSON preserves names as object keys", {
 })
 
 test_that("toJSON serializes arrays, tables, matrices, and data frames as valid JSON", {
-  values <- array(1:(2 * 3 * 4), c(2, 3, 4))
+  values <- array(1:(5 * 7 * 9), c(5, 7, 9))
   expect_true(isValidJSON(I(toJSON(values))))
+  expect_type(fromJSON(I(toJSON(values))), "list")
 
   expect_true(isValidJSON(I(toJSON(table(1:3)))))
   expect_true(isValidJSON(I(toJSON(table(1:3, 1:3)))))
@@ -38,6 +39,11 @@ test_that("toJSON serializes environments and S4 objects without changing public
   setClass("RJSONIOTestClass", representation(x = "integer", label = "character"))
   object <- new("RJSONIOTestClass", x = 1:3, label = "abc")
   expect_true(isValidJSON(I(toJSON(object))))
+
+  setClass("RJSONIOFoo", representation(a = "integer", b = "character"))
+  setClass("RJSONIOBar", representation(a = "integer", b = "character"))
+  expect_true(isClass("RJSONIOFoo"))
+  expect_true(isClass("RJSONIOBar"))
 })
 
 test_that("asJSVars returns JavaScript variable assignments invisibly", {

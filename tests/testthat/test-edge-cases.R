@@ -23,3 +23,26 @@ test_that("scalarCollapse preserves current nested-list behavior", {
   expect_true(isValidJSON(I(encoded)))
   expect_type(fromJSON(encoded, simplify = FALSE), "list")
 })
+
+test_that("lists with empty vectors keep current parsed structure", {
+  expect_equal(
+    fromJSON(toJSON(list(x = 1, y = character(0)))),
+    list(x = 1, y = structure(list(), class = "AsIs"))
+  )
+  expect_equal(
+    fromJSON(toJSON(list(x = 1, y = character(0), b = 1))),
+    list(x = 1, y = structure(list(), class = "AsIs"), b = 1)
+  )
+  expect_equal(
+    fromJSON(toJSON(list(x = vector(), y = 123, z = "allo"))),
+    list(x = structure(list(), class = "AsIs"), y = 123, z = "allo")
+  )
+})
+
+test_that("bundled UTF-8 news fixture remains parseable", {
+  load(test_path("../newsUTF8.rda"))
+
+  parsed <- fromJSON(news)
+  expect_type(parsed, "list")
+  expect_named(parsed, c("offset", "results", "tokens", "total"))
+})
