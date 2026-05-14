@@ -1,9 +1,21 @@
-# RJSONIO development version
+# RJSONIO 2.0.4
 
 ## Performance
 
 - Added a native `toJSON()` fast path for integer, logical, and character
   vectors while preserving existing JSON output for supported cases.
+
+## Documentation
+
+- Repositioned the package documentation around stable JSON conversion,
+  compatibility, and extensibility rather than historical comparisons.
+- Added a package comparison article describing where RJSONIO fits among other
+  R JSON packages.
+- Added contributor, release, and citation metadata for the GitHub repository.
+
+## Continuous integration
+
+- Added a GitHub Actions package check workflow for Linux, macOS, and Windows.
 
 # RJSONIO 2.0.3
 

@@ -7,3 +7,6 @@
 ^vignettes/competitor-benchmarks\.Rmd$
 ^vignettes/competitor-benchmarks\.html$
 ^vignettes/figures/benchmarks$
+^CONTRIBUTING\.md$
+^CODE_OF_CONDUCT\.md$
+^CITATION\.cff$

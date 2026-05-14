@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use RJSONIO, please cite the package."
+title: "RJSONIO: Serialize R Objects to JSON"
+type: software
+authors:
+  - family-names: Li
+    given-names: Yaoxiang
+    orcid: "https://orcid.org/0000-0001-9200-1016"
+  - family-names: Temple Lang
+    given-names: Duncan
+repository-code: "https://github.com/YaoxiangLi/RJSONIO"
+url: "https://yaoxiangli.github.io/RJSONIO/"
+license: BSD-3-Clause
+version: 2.0.4

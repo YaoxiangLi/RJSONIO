@@ -1,0 +1,70 @@
+---
+title: "Choosing JSON Tools"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Choosing JSON Tools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+R has several JSON packages. They overlap on basic parsing and writing, but
+they do not all make the same trade-offs. This article describes where
+`RJSONIO` fits so that package authors and users can make a practical choice.
+
+## RJSONIO's Role
+
+`RJSONIO` is maintained as a stable, extensible JSON package. Its strongest
+fit is code that depends on established `RJSONIO` behavior or needs features
+such as:
+
+- `fromJSON()`, `toJSON()`, and `isValidJSON()` with the existing interface;
+- parser handlers and callbacks;
+- custom serialization through S4 methods;
+- parsing from files and connections;
+- explicit control over JSON generation options.
+
+This is a compatibility and extensibility role. It does not require claiming
+that one JSON package is always better than another.
+
+## Package Selection
+
+For new code, choose based on the work being done:
+
+| Need | Practical choice |
+|---|---|
+| Keep existing `RJSONIO` behavior stable | Use `RJSONIO` |
+| Use parser callbacks or custom handlers | Use `RJSONIO` |
+| Serialize S4 or custom objects through methods | Use `RJSONIO` |
+| Work mainly with tidy data frames and web APIs | Also evaluate `jsonlite` |
+| Optimize for maximum parsing speed | Also evaluate `yyjsonr` or `RcppSimdJson` |
+| Validate JSON schemas or transform JSON with jq-style queries | Use a specialized package |
+
+The point is not to make every package do every job. `RJSONIO` should remain
+predictable for the jobs it already supports while performance and
+documentation improve over time.
+
+## Compatibility Contract
+
+Maintenance changes should follow these rules:
+
+- public functions keep their existing arguments and return shapes;
+- examples in the manual, vignettes, and tests continue to run;
+- old regression tests remain part of the test suite;
+- performance changes must preserve JSON output for the covered cases;
+- behavior changes are documented in `NEWS.md`.
+
+These rules help users decide when upgrading is low risk.
+
+## Performance Comparisons
+
+The repository includes optional benchmark scripts under `benchmarks/`, and
+the pkgdown site includes a benchmark article. Benchmark results are
+machine-specific. They are useful for local checks and regression tracking,
+but they should not be treated as universal rankings.

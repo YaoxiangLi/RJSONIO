@@ -25,6 +25,7 @@ articles:
       - type-mapping
       - advanced-customization
       - connections-and-streaming
+      - choosing-json-tools
   - title: Benchmarks
     contents:
       - competitor-benchmarks
