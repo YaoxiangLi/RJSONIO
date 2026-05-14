@@ -1,3 +1,12 @@
+# RJSONIO 2.0.1
+
+## Testing
+
+- Added `testthat` unit test support for the public package API.
+- Added compatibility tests for parsing, serialization, round trips,
+  simplification behavior, encodings, connections, edge cases, and string
+  callbacks to help preserve API stability for downstream packages.
+
 # RJSONIO 2.0.0
 
 ## Maintainer handover
