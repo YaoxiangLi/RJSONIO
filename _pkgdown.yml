@@ -25,6 +25,9 @@ articles:
       - type-mapping
       - advanced-customization
       - connections-and-streaming
+  - title: Benchmarks
+    contents:
+      - competitor-benchmarks
 
 reference:
   - title: Read JSON

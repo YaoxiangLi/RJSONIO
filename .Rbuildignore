@@ -3,3 +3,7 @@
 ^_pkgdown\.yml$
 ^\.github$
 ^docs$
+^benchmarks$
+^vignettes/competitor-benchmarks\.Rmd$
+^vignettes/competitor-benchmarks\.html$
+^vignettes/figures/benchmarks$

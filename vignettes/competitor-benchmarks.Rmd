@@ -1,0 +1,103 @@
+---
+title: "Competitor Benchmarks"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Competitor Benchmarks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This page records optional benchmark results for `RJSONIO` and direct JSON
+package competitors. The benchmark scripts are kept in the GitHub repository
+under `benchmarks/` and are excluded from CRAN package builds.
+
+The numbers are machine-specific. They are useful for checking relative behavior
+on one system, but should be rerun locally before making performance claims.
+
+```{r package-versions, echo = FALSE}
+version_file <- "figures/benchmarks/package-versions.csv"
+if (file.exists(version_file)) {
+  versions <- read.csv(version_file, stringsAsFactors = FALSE)
+  knitr::kable(versions, caption = "Packages included in the benchmark run")
+}
+```
+
+```{r environment, echo = FALSE}
+environment_file <- "figures/benchmarks/environment.csv"
+if (file.exists(environment_file)) {
+  environment <- read.csv(environment_file, stringsAsFactors = FALSE)
+  knitr::kable(environment, caption = "Benchmark environment")
+}
+```
+
+## Benchmark Tasks
+
+The benchmark suite compares supported operations across the direct competitor
+set:
+
+- parse JSON from a string;
+- parse JSON from a file;
+- write JSON from R objects;
+- validate JSON syntax;
+- round-trip R objects through JSON.
+
+The payloads include a numeric vector, a data frame, and a nested list. Packages
+that do not support a given operation are skipped for that operation.
+
+## Elapsed Time
+
+```{r elapsed-time, echo = FALSE, out.width = "100%"}
+elapsed_plot <- "figures/benchmarks/elapsed-time.png"
+if (file.exists(elapsed_plot)) {
+  knitr::include_graphics(elapsed_plot)
+}
+```
+
+## Memory Allocation
+
+```{r memory-allocation, echo = FALSE, out.width = "100%"}
+memory_plot <- "figures/benchmarks/memory-allocation.png"
+if (file.exists(memory_plot)) {
+  knitr::include_graphics(memory_plot)
+}
+```
+
+## Relative Elapsed Time
+
+```{r relative-time, echo = FALSE, out.width = "100%"}
+relative_plot <- "figures/benchmarks/relative-time.png"
+if (file.exists(relative_plot)) {
+  knitr::include_graphics(relative_plot)
+}
+```
+
+## Skipped Operations
+
+```{r skipped-operations, echo = FALSE}
+skip_file <- "figures/benchmarks/benchmark-skips.csv"
+if (file.exists(skip_file)) {
+  skips <- read.csv(skip_file, stringsAsFactors = FALSE)
+  if (nrow(skips)) {
+    knitr::kable(skips, caption = "Skipped packages or operations")
+  }
+}
+```
+
+## Reproducing
+
+Run the benchmarks from the repository root:
+
+```r
+source("benchmarks/run-benchmarks.R")
+```
+
+The script writes CSV files to `benchmarks/results/` and plots to
+`benchmarks/figures/`. It also copies the current benchmark artifacts used by
+this page to `vignettes/figures/benchmarks/`.
