@@ -1,5 +1,5 @@
 Package: RJSONIO
-Version: 2.0.4
+Version: 2.0.5
 Title: Serialize R Objects to JSON
 Description: Converts R objects to and from JavaScript Object Notation
   (JSON). The package provides a stable interface for reading JSON from

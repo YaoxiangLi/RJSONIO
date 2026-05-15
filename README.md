@@ -49,7 +49,7 @@ fromJSON(json)
 Validate JSON before parsing:
 
 ```r
-candidate <- toJSON(list(name = "RJSONIO", version = "2.0.4"))
+candidate <- toJSON(list(name = "RJSONIO", version = "2.0.5"))
 isValidJSON(I(candidate))
 ```
 
@@ -96,7 +96,7 @@ Run a package check:
 
 ```sh
 R CMD build RJSONIO
-R CMD check --no-manual RJSONIO_2.0.4.tar.gz
+R CMD check --no-manual RJSONIO_2.0.5.tar.gz
 ```
 
 Optional benchmark scripts are kept under `benchmarks/`. They are intended for

@@ -1,3 +1,11 @@
+# RJSONIO 2.0.5
+
+## Installation
+
+- Added bounds checks in the bundled UTF-8 conversion helper to avoid GCC 16
+  `-Warray-bounds` installation warnings on CRAN's
+  `r-devel-linux-x86_64-debian-gcc` check flavor.
+
 # RJSONIO 2.0.4
 
 ## Performance
